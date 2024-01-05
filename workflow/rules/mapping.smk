@@ -71,9 +71,9 @@ rule bwa__map_reads_to_reference:
 
 rule samtools__bam_index:
     input:
-        "results/mapping/mapped/{sample}.bam",
+        bam="results/mapping/mapped/{sample}.bam",
     output:
-        "results/mapping/mapped/{sample}.bam.bai",
+        bai="results/mapping/mapped/{sample}.bam.bai",
     benchmark:
         "benchmarks/samtools/bam_index/mapped/{sample}.benchmark"
     threads: min(config["threads"]["bam_index"], config["max_threads"])
