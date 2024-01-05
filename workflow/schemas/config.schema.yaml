@@ -1,8 +1,8 @@
 "$schema": http://json-schema.org/draft-07/schema#
-"allOf": [
+"allOf":
+  [
     {
-      # "$ref": "https://github.com/xsitarcik/reads/blob/v1.1.0/workflow/schemas/config.schema.yaml",
-      "$ref": "https://github.com/xsitarcik/reads/blob/main/workflow/schemas/config.schema.yaml",
+      "$ref": "https://github.com/xsitarcik/reads/blob/v2.0.0/workflow/schemas/config.schema.yaml",
     },
     { "$ref": "#/definitions/MappingWorkflow" },
   ]
