@@ -1,1 +1,72 @@
-# schema for the config
+"$schema": http://json-schema.org/draft-07/schema#
+"allOf": [
+    {
+      # "$ref": "https://github.com/xsitarcik/reads/blob/v1.1.0/workflow/schemas/config.schema.yaml",
+      "$ref": "https://github.com/xsitarcik/reads/blob/main/workflow/schemas/config.schema.yaml",
+    },
+    { "$ref": "#/definitions/MappingWorkflow" },
+  ]
+definitions:
+  MappingWorkflow:
+    type: object
+    additionalProperties: true
+    properties:
+      mapping:
+        type: object
+        "$ref": "#/definitions/Mapping"
+        default: {}
+      resources:
+        type: object
+        "$ref": "#/definitions/Resources"
+        default: {}
+      threads:
+        type: object
+        "$ref": "#/definitions/Threads"
+        default: {}
+    title: MappingWorkflow
+  Mapping:
+    additionalProperties: false
+    title: Mapping
+    properties:
+      reference_dir:
+        type: string
+        description: "Path to the reference directory."
+      generate_qualimap:
+        type: boolean
+    required:
+      - reference_dir
+      - generate_qualimap
+  Resources:
+    additionalProperties: true
+    mapping_mem_mb:
+      type: integer
+      description: "Memory in MB to reserve for mapping"
+    bam_index_mem_mb:
+      type: integer
+      description: "Memory in MB to reserve for bam_index"
+    picard_mem_mb:
+      type: integer
+      description: "Memory in MB to reserve for picard"
+    qualimap_mem_mb:
+      type: integer
+      description: "Memory in MB to reserve for qualimap"
+    required:
+      - mapping_mem_mb
+      - bam_index_mem_mb
+      - picard_mem_mb
+      - qualimap_mem_mb
+    title: Resources
+  Threads:
+    additionalProperties: true
+    mapping:
+      type: integer
+      default: 1
+      description: "Number of threads to use for mapping"
+    bam_index:
+      type: integer
+      default: 1
+      description: "Number of threads to use for bam_index"
+    title: Threads
+    required:
+      - mapping
+      - bam_index
