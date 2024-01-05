@@ -14,6 +14,10 @@ def get_fastq_for_mapping(wildcards):
     return reads_workflow.get_final_fastq_for_sample(wildcards.sample)
 
 
+def get_fastq_for_mapping(wildcards):
+    return reads_workflow.get_final_fastq_for_sample(wildcards.sample)
+
+
 def get_read_group_for_sample(wildcards):
     return reads_workflow.get_read_group_for_sample(wildcards.sample)
 

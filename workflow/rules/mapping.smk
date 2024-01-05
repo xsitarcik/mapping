@@ -9,6 +9,19 @@ rule samtools__index_reference:
         "https://github.com/xsitarcik/wrappers/raw/v1.12.6/wrappers/samtools/faidx"
 
 
+rule custom__infer_read_group:
+    input:
+        get_fastq_for_mapping,
+    output:
+        read_group="results/reads/.read_groups/{sample}.txt",
+    params:
+        sample_id=lambda wildcards: wildcards.sample,
+    log:
+        "logs/custom/infer_and_store_read_group/{sample}.log",
+    wrapper:
+        "https://github.com/xsitarcik/wrappers/raw/v1.12.6/wrappers/custom/read_group"
+
+
 rule picard__prepare_dict_index:
     input:
         "{reference_dir}/{reference}.fa",
@@ -42,7 +55,7 @@ rule bwa__map_reads_to_reference:
     input:
         reads=get_fastq_for_mapping,
         index=get_bwa_index_for_mapping(),
-        read_group=get_read_group_for_sample,
+        read_group="results/reads/.read_groups/{sample}.txt",
     output:
         bam=temp("results/mapping/mapped/{sample}.bam"),
     threads: min(config["threads"]["mapping"], config["max_threads"])
