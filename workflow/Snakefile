@@ -3,16 +3,12 @@ from snakemake.utils import min_version
 min_version("7.25.0")
 
 
-localrules:
-    all,
-
-
 include: "rules/common.smk"
 
 
 module reads_workflow:
     snakefile:
-        github("xsitarcik/reads", path="workflow/Snakefile", tag="v2.0.1")
+        github("xsitarcik/reads", path="workflow/Snakefile", tag="v3.0.0")
     config:
         config
 
@@ -21,6 +17,13 @@ use rule * from reads_workflow as reads_*
 
 
 include: "rules/mapping.smk"
+include: "rules/mapping/{tool}.smk".format(tool=config["mapping"]["mapping"])
+include: "rules/deduplication/{tool}.smk".format(tool=config["mapping"]["deduplication"])
+
+
+if config["mapping"]["_generate_qualimap"]:
+
+    include: "rules/qualimap.smk"
 
 
 rule all:
@@ -28,3 +31,4 @@ rule all:
         **reads_workflow.get_outputs(),
         **get_outputs(),
     default_target: True
+    localrule: True
