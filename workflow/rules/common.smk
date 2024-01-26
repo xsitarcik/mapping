@@ -82,6 +82,10 @@ def get_input_bam_for_sample_and_ref(sample: str, reference: str):
     return f"results/mapping/{reference}/{get_last_step()}/{sample}.bam"
 
 
+def get_input_bai_for_sample_and_ref(sample: str, reference: str):
+    return f"results/mapping/{reference}/{get_last_step()}/{sample}.bam.bai"
+
+
 ### Parameter parsing from config #####################################################################################
 
 
