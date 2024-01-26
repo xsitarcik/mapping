@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/xsitarcik/mapping/compare/v2.0.0...v2.0.1) (2024-01-26)
+
+
+### Bug Fixes
+
+* qualimap requested for steps defined in config ([99c558a](https://github.com/xsitarcik/mapping/commit/99c558af84978c9307a47a8d59f8694388b393a0))
+
 ## [2.0.0](https://github.com/xsitarcik/mapping/compare/v1.0.0...v2.0.0) (2024-01-26)
 
 
