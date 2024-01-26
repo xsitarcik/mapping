@@ -1,4 +1,4 @@
-"$schema": http://json-schema.org/draft-07/schema#
+"$schema": https://json-schema.org/draft/2020-12/schema
 "$ref": "#/definitions/MappingWorkflow"
 definitions:
   MappingWorkflow:
@@ -8,16 +8,36 @@ definitions:
       mapping:
         type: object
         "$ref": "#/definitions/Mapping"
-        default: {}
       resources:
         type: object
         "$ref": "#/definitions/Resources"
-        default: {}
       threads:
         type: object
         "$ref": "#/definitions/Threads"
-        default: {}
     title: MappingWorkflow
+    allOf:
+      - if:
+          properties:
+            mapping:
+              properties:
+                deduplication:
+                  type: string
+        then:
+          properties:
+            resources:
+              required:
+                - mapping__deduplication_mem_mb
+      - if:
+          properties:
+            mapping:
+              properties:
+                _generate_qualimap:
+                  minItems: 1
+        then:
+          properties:
+            resources:
+              required:
+                - mapping__qualimap_mem_mb
   Mapping:
     additionalProperties: false
     title: Mapping
@@ -32,10 +52,10 @@ definitions:
         description: "Paths to the reference directory."
         items:
           type: string
-        minitems: 1
+        minItems: 1
       deduplication:
         type: [string, "null"]
-        description: "Deduplication method to use."
+        description: "Optional. Deduplication method to use."
         enum:
           - "picard"
           - null
@@ -51,6 +71,17 @@ definitions:
     required:
       - mapping
       - reference_dirs
+    allOf:
+      - if:
+          properties:
+            _generate_fastqc_for:
+              contains:
+                const: "deduplication"
+        then:
+          properties:
+            deduplication:
+              type: string
+              description: "Mapping->Deduplication is required if qualimap is requested for deduplication"
   Resources:
     additionalProperties: true
     mapping__mapping_mem_mb:
@@ -68,8 +99,6 @@ definitions:
     required:
       - mapping__mapping_mem_mb
       - mapping__indexing_mem_mb
-      - mapping__deduplication_mem_mb
-      - mapping__qualimap_mem_mb
     title: Resources
   Threads:
     additionalProperties: true
@@ -77,7 +106,7 @@ definitions:
       type: integer
       default: 1
       description: "Number of threads to use for mapping"
-    mapping__index:
+    mapping__indexing:
       type: integer
       default: 1
       description: "Number of threads to use for bam_index"

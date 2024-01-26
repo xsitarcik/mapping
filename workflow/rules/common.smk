@@ -4,7 +4,7 @@ from snakemake.utils import validate
 configfile: "config/config.yaml"
 
 
-validate(config, "../schemas/config.schema.yaml")
+validate(config, "../schemas/config.schema.yaml", set_default=False)
 
 
 ### Layer for adapting other workflows  ###############################################################################
@@ -48,7 +48,7 @@ def get_outputs():
         outputs["qualimaps"] = expand(
             f"results/mapping/{{reference}}/{step}/{{sample}}/bamqc",
             sample=sample_names,
-            step=qualimap_steps,
+            step=config["mapping"]["_generate_qualimap"],
             reference=reference_dict.keys(),
         )
 

@@ -1,15 +1,15 @@
 reads: # Specify the order and methods for each read processing step. If no method is specified, the step will not be performed.
-  subsampling: null # OPT - specify method of subsampling. Allowed: "seqtk", "null".
-  trimming: "cutadapt" # OPT - specify method of trimming. Allowed: "cutadapt", "null".
-  decontamination: null # OPT - specify method of decontamination. Allowed: "kraken", "null".
-  deduplication: null # OPT - specify method of deduplication. Allowed: "fastuniq", "null".
+  subsampling: null # OPT - specify method of subsampling. Allowed: "seqtk", null.
+  trimming: "cutadapt" # OPT - specify method of trimming. Allowed: "cutadapt", null.
+  decontamination: null # OPT - specify method of decontamination. Allowed: "kraken", null.
+  deduplication: null # OPT - specify method of deduplication. Allowed: "fastuniq", null.
   _generate_fastqc_for: ["trimming"] # OPT - specify which steps to generate fastqc for. Allowed: "original"."subsampling", "trimming", "decontamination", "deduplication" or empty list (default: empty list).
 
 mapping:
-  mapping: "bwa"
-  reference_dirs: ["test_data/reference/sars_cov_2"]
-  deduplication: "picard"
-  _generate_qualimap: []
+  mapping: "bwa" # Specify method for mapping. Allowed: "bwa".
+  reference_dirs: ["test_data/reference/sars_cov_2"] # specify list of reference dirs to map against. Each dir must contain a fasta file names as the basename dir.
+  deduplication: "picard" # OPT - specify method for mapping deduplication. Allowed: "picard", null.
+  _generate_qualimap: ["mapping", "deduplication"] # OPT - specify which steps to generate qualimap for. Allowed: "mapping", "deduplication" or empty list (default: empty list).
 
 ### HYPERPARAMETERS #############################
 
