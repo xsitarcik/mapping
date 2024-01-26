@@ -1,11 +1,5 @@
-"$schema": http://json-schema.org/draft-07/schema#
-"allOf":
-  [
-    {
-      "$ref": "https://github.com/xsitarcik/reads/blob/v2.0.1/workflow/schemas/config.schema.yaml",
-    },
-    { "$ref": "#/definitions/MappingWorkflow" },
-  ]
+"$schema": https://json-schema.org/draft/2020-12/schema
+"$ref": "#/definitions/MappingWorkflow"
 definitions:
   MappingWorkflow:
     type: object
@@ -14,59 +8,109 @@ definitions:
       mapping:
         type: object
         "$ref": "#/definitions/Mapping"
-        default: {}
       resources:
         type: object
         "$ref": "#/definitions/Resources"
-        default: {}
       threads:
         type: object
         "$ref": "#/definitions/Threads"
-        default: {}
     title: MappingWorkflow
+    allOf:
+      - if:
+          properties:
+            mapping:
+              properties:
+                deduplication:
+                  type: string
+        then:
+          properties:
+            resources:
+              required:
+                - mapping__deduplication_mem_mb
+      - if:
+          properties:
+            mapping:
+              properties:
+                _generate_qualimap:
+                  minItems: 1
+        then:
+          properties:
+            resources:
+              required:
+                - mapping__qualimap_mem_mb
   Mapping:
     additionalProperties: false
     title: Mapping
     properties:
-      reference_dir:
+      mapping:
         type: string
-        description: "Path to the reference directory."
-      generate_qualimap:
-        type: boolean
+        description: "Mapping tool to use for mapping."
+        enum:
+          - "bwa"
+      reference_dirs:
+        type: array
+        description: "Paths to the reference directory."
+        items:
+          type: string
+        minItems: 1
+      deduplication:
+        type: [string, "null"]
+        description: "Optional. Deduplication method to use."
+        enum:
+          - "picard"
+          - null
+      _generate_qualimap:
+        type: array
+        description: "Steps to generate qualimap for."
+        default: []
+        items:
+          type: string
+          enum:
+            - "mapping"
+            - "deduplication"
     required:
-      - reference_dir
-      - generate_qualimap
+      - mapping
+      - reference_dirs
+    allOf:
+      - if:
+          properties:
+            _generate_fastqc_for:
+              contains:
+                const: "deduplication"
+        then:
+          properties:
+            deduplication:
+              type: string
+              description: "Mapping->Deduplication is required if qualimap is requested for deduplication"
   Resources:
     additionalProperties: true
-    mapping_mem_mb:
+    mapping__mapping_mem_mb:
       type: integer
       description: "Memory in MB to reserve for mapping"
-    bam_index_mem_mb:
+    mapping__indexing_mem_mb:
       type: integer
       description: "Memory in MB to reserve for bam_index"
-    picard_mem_mb:
+    mapping__deduplication_mem_mb:
       type: integer
       description: "Memory in MB to reserve for picard"
-    qualimap_mem_mb:
+    mapping__qualimap_mem_mb:
       type: integer
       description: "Memory in MB to reserve for qualimap"
     required:
-      - mapping_mem_mb
-      - bam_index_mem_mb
-      - picard_mem_mb
-      - qualimap_mem_mb
+      - mapping__mapping_mem_mb
+      - mapping__indexing_mem_mb
     title: Resources
   Threads:
     additionalProperties: true
-    mapping:
+    mapping__mapping:
       type: integer
       default: 1
       description: "Number of threads to use for mapping"
-    bam_index:
+    mapping__indexing:
       type: integer
       default: 1
       description: "Number of threads to use for bam_index"
     title: Threads
     required:
-      - mapping
-      - bam_index
+      - mapping__mapping
+      - mapping__indexing
