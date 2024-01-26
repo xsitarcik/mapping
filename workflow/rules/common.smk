@@ -32,24 +32,33 @@ def get_reference_dir_for_name(name: str):
     return reference_dict[name]
 
 
+def get_reference_names():
+    return reference_dict.keys()
+
+
 ### Global rule-set stuff #############################################################################################
+
+
+def get_last_step():
+    return "deduplication" if config["mapping"]["deduplication"] else "mapping"
 
 
 def get_outputs():
     sample_names = get_sample_names()
-    step = "deduplication" if config["mapping"]["deduplication"] else "mapping"
 
     outputs = {}
     outputs["bams"] = expand(
-        f"results/mapping/{{reference}}/{step}/{{sample}}.bam", sample=sample_names, reference=reference_dict.keys()
+        f"results/mapping/{{reference}}/{get_last_step()}/{{sample}}.bam",
+        sample=sample_names,
+        reference=get_reference_names(),
     )
 
     if qualiap_steps := config["mapping"]["_generate_qualimap"]:
         outputs["qualimaps"] = expand(
-            f"results/mapping/{{reference}}/{step}/{{sample}}/bamqc",
+            f"results/mapping/{{reference}}/{{step}}/{{sample}}/bamqc",
             sample=sample_names,
             step=config["mapping"]["_generate_qualimap"],
-            reference=reference_dict.keys(),
+            reference=get_reference_names(),
         )
 
     return outputs
@@ -64,6 +73,16 @@ def infer_bwa_index_for_mapping(wildcards):
         ".pac",
         ".sa",
     )
+
+
+### Contract for other workflows ######################################################################################
+
+
+def get_input_bam_for_sample_and_ref(sample: str, reference: str):
+    return f"results/mapping/{reference}/{get_last_step()}/{sample}.bam"
+
+
+### Parameter parsing from config #####################################################################################
 
 
 ### Resource handling #################################################################################################
