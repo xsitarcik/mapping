@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.2](https://github.com/xsitarcik/mapping/compare/v2.0.1...v2.0.2) (2024-02-25)
+
+
+### Bug Fixes
+
+* updated schemas ([180c5eb](https://github.com/xsitarcik/mapping/commit/180c5eb595ad981e96e01514ad34eba216d4dbf0))
+
 ## [2.0.1](https://github.com/xsitarcik/mapping/compare/v2.0.0...v2.0.1) (2024-01-26)
 
 
