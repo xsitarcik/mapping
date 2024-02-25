@@ -5,6 +5,12 @@ definitions:
     type: object
     additionalProperties: true
     properties:
+      max_threads:
+        type: integer
+        description: "Number of maximum threads to use in jobs"
+      max_mem_mb:
+        type: integer
+        description: "Maximum memory in megabytes to allocate for any job"
       mapping:
         type: object
         "$ref": "#/definitions/Mapping"
@@ -14,6 +20,12 @@ definitions:
       threads:
         type: object
         "$ref": "#/definitions/Threads"
+    required:
+      - max_threads
+      - max_mem_mb
+      - mapping
+      - resources
+      - threads
     title: MappingWorkflow
     allOf:
       - if:
@@ -49,7 +61,7 @@ definitions:
           - "bwa"
       reference_dirs:
         type: array
-        description: "Paths to the reference directory."
+        description: "Paths to the reference directory. Each directory must contain a fasta file named as the basename of the directory."
         items:
           type: string
         minItems: 1
@@ -84,32 +96,34 @@ definitions:
               description: "Mapping->Deduplication is required if qualimap is requested for deduplication"
   Resources:
     additionalProperties: true
-    mapping__mapping_mem_mb:
-      type: integer
-      description: "Memory in MB to reserve for mapping"
-    mapping__indexing_mem_mb:
-      type: integer
-      description: "Memory in MB to reserve for bam_index"
-    mapping__deduplication_mem_mb:
-      type: integer
-      description: "Memory in MB to reserve for picard"
-    mapping__qualimap_mem_mb:
-      type: integer
-      description: "Memory in MB to reserve for qualimap"
+    properties:
+      mapping__mapping_mem_mb:
+        type: integer
+        description: "Memory in MB to reserve for mapping"
+      mapping__indexing_mem_mb:
+        type: integer
+        description: "Memory in MB to reserve for bam_index"
+      mapping__deduplication_mem_mb:
+        type: integer
+        description: "Memory in MB to reserve for picard"
+      mapping__qualimap_mem_mb:
+        type: integer
+        description: "Memory in MB to reserve for qualimap"
     required:
       - mapping__mapping_mem_mb
       - mapping__indexing_mem_mb
     title: Resources
   Threads:
     additionalProperties: true
-    mapping__mapping:
-      type: integer
-      default: 1
-      description: "Number of threads to use for mapping"
-    mapping__indexing:
-      type: integer
-      default: 1
-      description: "Number of threads to use for bam_index"
+    properties:
+      mapping__mapping:
+        type: integer
+        default: 1
+        description: "Number of threads to use for mapping"
+      mapping__indexing:
+        type: integer
+        default: 1
+        description: "Number of threads to use for bam_index"
     title: Threads
     required:
       - mapping__mapping
