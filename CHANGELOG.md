@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/xsitarcik/mapping/compare/v2.0.2...v2.1.0) (2024-04-16)
+
+
+### Features
+
+* added module versions configurable ([7ebf26e](https://github.com/xsitarcik/mapping/commit/7ebf26e01d0313e37e8bb870428fb17aa74873a1))
+
 ## [2.0.2](https://github.com/xsitarcik/mapping/compare/v2.0.1...v2.0.2) (2024-02-25)
 
 
