@@ -20,12 +20,16 @@ definitions:
       threads:
         type: object
         "$ref": "#/definitions/Threads"
+      module_versions:
+        type: object
+        "$ref": "#/definitions/ModuleVersions"
     required:
       - max_threads
       - max_mem_mb
       - mapping
       - resources
       - threads
+      - module_versions
     title: MappingWorkflow
     allOf:
       - if:
@@ -128,3 +132,15 @@ definitions:
     required:
       - mapping__mapping
       - mapping__indexing
+  ModuleVersions:
+    type: object
+    additionalProperties: true
+    properties:
+      reads:
+        type: string
+        default: 1
+        pattern: "v[0-9]+.[0-9]+.[0-9]+"
+        description: "Version of reads module"
+    title: ModuleVersions
+    required:
+      - reads
