@@ -22,14 +22,19 @@ def get_sample_names():
 
 
 def get_reference_name_from_path(path: str):
-    return os.path.basename(os.path.realpath(path))
+    name, ext = os.path.splitext(os.path.basename(os.path.realpath(path)))
+    if ext not in [".fasta", ".fa"]:
+        raise ValueError(f"Reference file {path} does not have a valid extension (.fasta or .fa)")
+    return name
 
 
-reference_dict = {get_reference_name_from_path(path): path for path in config["mapping"]["reference_dirs"]}
+reference_dict = {
+    get_reference_name_from_path(path): os.path.realpath(path) for path in config["mapping"]["reference_fasta_paths"]
+}
 
 
 def get_reference_dir_for_name(name: str):
-    return reference_dict[name]
+    return os.path.dirname(reference_dict[name])
 
 
 def get_reference_names():

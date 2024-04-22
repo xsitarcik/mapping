@@ -13,7 +13,7 @@ rule bwa__build_index:
         "https://github.com/xsitarcik/wrappers/raw/v1.12.6/wrappers/bwa/index"
 
 
-rule bwa__map_reads_to_reference:
+rule bwa__map_reads:
     input:
         reads=get_fastq_for_mapping,
         index=infer_bwa_index_for_mapping,

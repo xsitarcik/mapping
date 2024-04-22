@@ -5,15 +5,19 @@ definitions:
     type: object
     additionalProperties: true
     properties:
-      max_threads:
-        type: integer
-        description: "Number of maximum threads to use in jobs"
-      max_mem_mb:
-        type: integer
-        description: "Maximum memory in megabytes to allocate for any job"
       mapping:
         type: object
         "$ref": "#/definitions/Mapping"
+      max_threads:
+        type: integer
+        description: "Number of maximum threads to use in jobs."
+        default: 8
+        Minimum: 1
+      max_mem_mb:
+        type: integer
+        description: "Maximum memory in megabytes to allocate for any job."
+        Minimum: 2048
+        default: 16384
       resources:
         type: object
         "$ref": "#/definitions/Resources"
@@ -60,33 +64,40 @@ definitions:
     properties:
       mapping:
         type: string
-        description: "Mapping tool to use for mapping."
         enum:
           - "bwa"
-      reference_dirs:
+        description: "Mapping tool to use."
+        default: "bwa"
+      reference_fasta_paths:
         type: array
-        description: "Paths to the reference directory. Each directory must contain a fasta file named as the basename of the directory."
         items:
           type: string
         minItems: 1
+        default: ["example.fa"]
+        description: "References to map against. Provide paths to the reference fasta files."
       deduplication:
         type: [string, "null"]
-        description: "Optional. Deduplication method to use."
+        description: "Deduplication method to use."
         enum:
           - "picard"
           - null
+        default: null
+        examples:
+          - "picard"
       _generate_qualimap:
         type: array
         description: "Steps to generate qualimap for."
-        default: []
         items:
           type: string
           enum:
             - "mapping"
             - "deduplication"
+        examples: [["deduplication"]]
     required:
       - mapping
-      - reference_dirs
+      - reference_fasta_paths
+      - deduplication
+      - _generate_qualimap
     allOf:
       - if:
           properties:
@@ -104,15 +115,19 @@ definitions:
       mapping__mapping_mem_mb:
         type: integer
         description: "Memory in MB to reserve for mapping"
+        default: 8192
       mapping__indexing_mem_mb:
         type: integer
         description: "Memory in MB to reserve for bam_index"
+        default: 4096
       mapping__deduplication_mem_mb:
         type: integer
         description: "Memory in MB to reserve for picard"
+        default: 8192
       mapping__qualimap_mem_mb:
         type: integer
         description: "Memory in MB to reserve for qualimap"
+        default: 4096
     required:
       - mapping__mapping_mem_mb
       - mapping__indexing_mem_mb
@@ -122,11 +137,11 @@ definitions:
     properties:
       mapping__mapping:
         type: integer
-        default: 1
+        default: 4
         description: "Number of threads to use for mapping"
       mapping__indexing:
         type: integer
-        default: 1
+        default: 2
         description: "Number of threads to use for bam_index"
     title: Threads
     required:
@@ -138,7 +153,7 @@ definitions:
     properties:
       reads:
         type: string
-        default: 1
+        default: "v3.3.0"
         pattern: "v[0-9]+.[0-9]+.[0-9]+"
         description: "Version of reads module"
     title: ModuleVersions
