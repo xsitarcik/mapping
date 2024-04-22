@@ -1,15 +1,15 @@
 reads: # Specify the order and methods for each read processing step. If no method is specified, the step will not be performed.
-  subsampling: null # OPT - specify method of subsampling. Allowed: "seqtk", null.
-  trimming: "cutadapt" # OPT - specify method of trimming. Allowed: "cutadapt", null.
-  decontamination: null # OPT - specify method of decontamination. Allowed: "kraken", null.
-  deduplication: null # OPT - specify method of deduplication. Allowed: "fastuniq", null.
-  _generate_fastqc_for: ["trimming"] # OPT - specify which steps to generate fastqc for. Allowed: "original"."subsampling", "trimming", "decontamination", "deduplication" or empty list (default: empty list).
+  subsampling: null # null/enum: Subsampling method, if not set, subsampling will not be performed. Allowed: 'seqtk'.
+  trimming: "cutadapt" # null/enum: Trimming method, if not set, trimming will not be performed. Allowed: 'cutadapt'.
+  decontamination: null # null/enum: Decontamination method, if not set, decontamination will not be performed. Allowed: 'kraken'.
+  deduplication: null # null/enum: Deduplication method, if not set, deduplication will not be performed. Allowed: 'fastuniq'.
+  _generate_fastqc_for: ["trimming"] # list of enum: Specify which steps to generate fastqc for. Allowed: 'original','subsampling','trimming','decontamination','deduplication'.
 
 mapping:
   mapping: "bwa" # Specify method for mapping. Allowed: "bwa".
-  reference_dirs: ["test_data/reference/sars_cov_2"] # specify list of reference dirs to map against. Each dir must contain a fasta file names as the basename dir.
+  reference_fasta_paths: ["test_data/reference/sars_cov_2/sars_cov_2.fa"] # specify list of reference dirs to map against. Each dir must contain a fasta file names as the basename dir.
   deduplication: "picard" # OPT - specify method for mapping deduplication. Allowed: "picard", null.
-  _generate_qualimap: ["mapping", "deduplication"] # OPT - specify which steps to generate qualimap for. Allowed: "mapping", "deduplication" or empty list (default: empty list).
+  _generate_qualimap: ["deduplication"] # OPT - specify which steps to generate qualimap for. Allowed: "mapping", "deduplication" or empty list (default: empty list).
 
 ### HYPERPARAMETERS #############################
 
@@ -18,39 +18,34 @@ reads__subsampling__seqtk:
   n_reads: 1
   reduce_memory: true
 
-reads__trimming__cutadapt:
-  # 1st stage - trimming
-  cut_from_start_r1: null # OPT - removes a specified number of bases from the beginning of the R1 read.
-  cut_from_start_r2: null # OPT - removes a specified number of bases from the beginning of the R2 read.
-  cut_from_end_r1: null # OPT - removes a specified number of bases from the end of the R1 read.
-  cut_from_end_r2: null # OPT - removes a specified number of bases from the end of the R2 read.
-  quality_cutoff_from_5_end_r1: 20 # cutoff on 5' end of R1 read. The second step.
-  quality_cutoff_from_3_end_r1: 20 # cutoff on 3' end of R1 read. The second step.
-  quality_cutoff_from_5_end_r2: 20 # cutoff on 5' end of R2 read. The second step.
-  quality_cutoff_from_3_end_r2: 20 # cutoff on 3' end of R2 read. The second step.
-
-  # 2nd stage - Adapter removal
-  adapter_removal: # OPT - set "do" to false to skip this step.
-    do: true # If true, all below options are required. Else, they are ignored/can be deleted.
-    adapters_fasta: "test_data/adapters/artic_v4.fa"
-    action: "trim" # Defines an action to perform with the found adapter.
-    overlap: 3 # Minimum number of bases required to overlap with the adapter (default: 3).
-    read_location: "anywhere" # Uses adapters defined in adapters_fasta. Searches for adapters anywhere. Possible values: 'regular', 'front' and "anywhere" (default: "anywhere").
-    error_rate: 0.1 # Error tolerance used when searching for adapter (default: 0.1).
-    times: 1 # How many times to do adapter removal (default: 1).
-    keep_trimmed_only: false # Discard reads with no adapters found (default: false).
-
-  # 3rd stage - post adapter trimming
-  shorten_to_length: null # OPT - both R1 and R2 are shortened to this length.
-  trim_N_bases_on_ends: null # OPT - trim flanking N's on both read ends.
-
-  # 4th stage - Filtering
-  min_length_r1: null # OPT - minimum R1 read length. If R1 read is shorter, both R1 and R2 reads are discarded. The fourth step.
-  min_length_r2: null # OPT - minimum R2 read length. If R2 read is shorter, both R1 and R2 reads are discarded. The fourth step.
-  max_length_r1: null # OPT - maximum R1 read length. If R1 read is longer, both R1 and R2 reads are discarded. The fourth step.
-  max_length_r2: null # OPT - maximum R2 read length. If R2 read is longer, both R1 and R2 reads are discarded. The fourth step.
-  max_n_bases: null # OPT - Discard read if R1 or R2 has more than the specified number of N bases. The fifth step.
-  max_expected_errors: null # OPT - Discard read if R1 or R2 has more expected errors than this.
+reads__trimming__cutadapt: # Relevant only if reads->trimming is set to cutadapt.
+  cut_from_start_r1: null # null/int: Removes a specified number of bases from the beginning of the R1 read.
+  cut_from_start_r2: null # null/int: Removes a specified number of bases from the beginning of the R2 read.
+  cut_from_end_r1: null # null/int: Removes a specified number of bases from the end of the R1 read.
+  cut_from_end_r2: null # null/int: Removes a specified number of bases from the end of the R2 read.
+  quality_cutoff_from_3_end_r1: 20 # int(20): Removes lower quality bases from the 3' end of the R1 read.
+  quality_cutoff_from_5_end_r1: 20 # int(20): Removes lower quality bases from the 5' end of the R1 read.
+  quality_cutoff_from_3_end_r2: 20 # int(20): Removes lower quality bases from the 3' end of the R2 read.
+  quality_cutoff_from_5_end_r2: 20 # int(20): Removes lower quality bases from the 5' end of the R2 read.
+  nextseq_trimming_mode: false # bool(false): Modify quality-trimming algorithm to expect two-color chemistry data (NextSeq).
+  do_adapter_removal: false # bool(false): Whether to do adapter removal or not.
+  adapter_removal: # Relevant only if do_adapter_removal is set to true.
+    action: "trim" # enum(trim): Defines an action to perform with the found adapter. Allowed: 'retain','trim','mask','none','lowercase'.
+    overlap: 3 # int(3): Minimum number of bases required to overlap with the adapter.
+    error_rate: 0.1 # float(0.1): Error tolerance used when searching for adapter.
+    times: 1 # int(1): How many times to repeat adapter removal.
+    keep_trimmed_only: false # bool(false): Discard reads with no adapters found.
+    adapters_anywhere_file: "test_data/adapters/artic_v4.fa" # null/str: Fasta file path with adapters to be matched 'anywhere'.
+    adapters_3_end_file: null # null/str: Fasta file path with adapters to be matched at 3'end.
+    adapters_5_end_file: null # null/str: Fasta file path with adapters to be matched at 5'end.
+  shorten_to_length: null # null/int: Shorten each read to the specified length. Corresponds to the cutadapt length parameter.
+  trim_N_bases_on_ends: false # bool(false): Set to true to trim 'N' bases on ends.
+  min_length_r1: null # null/int: Discards R1 reads shorter than this. Recommended to set at least to 1, to discard empty reads.
+  min_length_r2: null # null/int: Discards R2 reads shorter than this. Recommended to set at least to 1, to discard empty reads.
+  max_length_r1: null # null/int: Discards R1 reads longer than this value.
+  max_length_r2: null # null/int: Discards R2 reads longer than this value.
+  max_n_bases: null # null/int: Removes reads with more 'N' bases than the specified number.
+  max_expected_errors: null # null/int: Discard reads whose expected number of errors exceeds this value.
 
 reads__decontamination__kraken:
   kraken_dir: "path_to_kraken/k2_viral_20230314" # Directory containing kraken DB files. If does not exist, will be downloaded using the dirname.
@@ -85,4 +80,4 @@ threads:
   mapping__indexing: 2
 
 module_versions:
-  reads: "v3.2.1"
+  reads: "v3.3.0"
