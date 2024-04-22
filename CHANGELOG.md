@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.2.0](https://github.com/xsitarcik/mapping/compare/v2.1.0...v2.2.0) (2024-04-22)
+
+
+### Features
+
+* fasta paths required instead of dirs for references ([a0e3e99](https://github.com/xsitarcik/mapping/commit/a0e3e99e288b58a187e6854d7f7b28ae7a5c196d))
+
+
+### Performance Improvements
+
+* bumped wrappers ([8609298](https://github.com/xsitarcik/mapping/commit/8609298b46a356c3662049ea911040842ad79a4c))
+
 ## [2.1.0](https://github.com/xsitarcik/mapping/compare/v2.0.2...v2.1.0) (2024-04-16)
 
 
