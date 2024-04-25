@@ -18,6 +18,10 @@ def get_sample_names():
     return reads_workflow.get_sample_names()
 
 
+def get_multiqc_inputs_for_reads():
+    return reads_workflow.get_multiqc_inputs()
+
+
 ### Data input handling independent of wildcards ######################################################################
 
 
@@ -40,6 +44,11 @@ def get_reference_dir_for_name(name: str):
 def get_reference_names():
     return reference_dict.keys()
 
+
+# def sample_has_enough_mapped_reads(sample_name: str):
+#     with checkpoints.checkpoint__min_mapped_reads_count.get(sample=sample_name).output[0].open() as f:
+#         num = int(f.read().strip())
+#     return num >= 1
 
 ### Global rule-set stuff #############################################################################################
 
@@ -69,6 +78,13 @@ def get_outputs():
     return outputs
 
 
+def get_standalone_outputs():
+    # outputs that will be produced if the module is run as a standalone workflow, not as a part of a larger workflow
+    return {
+        "multiqc_report": "results/_aggregation/multiqc.html",
+    }
+
+
 def infer_bwa_index_for_mapping(wildcards):
     return multiext(
         os.path.join(get_reference_dir_for_name(wildcards.reference), "bwa_index", wildcards.reference),
@@ -80,6 +96,14 @@ def infer_bwa_index_for_mapping(wildcards):
     )
 
 
+def infer_final_bam(wildcards):
+    return get_input_bam_for_sample_and_ref(wildcards.sample, wildcards.reference)
+
+
+def infer_final_bai(wildcards):
+    return get_input_bai_for_sample_and_ref(wildcards.sample, wildcards.reference)
+
+
 ### Contract for other workflows ######################################################################################
 
 
@@ -89,6 +113,30 @@ def get_input_bam_for_sample_and_ref(sample: str, reference: str):
 
 def get_input_bai_for_sample_and_ref(sample: str, reference: str):
     return f"results/mapping/{reference}/{get_last_step()}/{sample}.bam.bai"
+
+
+def get_multiqc_inputs():
+    outs = get_multiqc_inputs_for_reads()
+
+    if config["mapping"]["deduplication"] == "picard":
+        outs["picard_dedup"] = expand(
+            "results/mapping/{reference}/deduplication/{sample}.stats",
+            sample=get_sample_names(),
+            reference=get_reference_names(),
+        )
+
+    step = ""
+    if "deduplication" in config["mapping"]["_generate_qualimap"]:
+        step = "deduplication"
+    elif "mapping" in config["mapping"]["_generate_qualimap"]:
+        step = "mapping"
+    if step:
+        outs["qualimaps"] = expand(
+            f"results/mapping/{{reference}}/{step}/{{sample}}/bamqc",
+            sample=get_sample_names(),
+            reference=get_reference_names(),
+        )
+    return outs
 
 
 ### Parameter parsing from config #####################################################################################

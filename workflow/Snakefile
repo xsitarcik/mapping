@@ -16,9 +16,19 @@ module reads_workflow:
 use rule * from reads_workflow as reads_*
 
 
+# Only include standalone rules if the module is used standalone, i.e. not as a part of a larger workflow
+if not config.get("module_versions") or "mapping" not in config["module_versions"]:
+
+    include: "rules/standalone.smk"
+
+
 include: "rules/mapping.smk"
 include: "rules/mapping/{tool}.smk".format(tool=config["mapping"]["mapping"])
-include: "rules/deduplication/{tool}.smk".format(tool=config["mapping"]["deduplication"])
+
+
+if config["mapping"]["deduplication"]:
+
+    include: "rules/deduplication/{tool}.smk".format(tool=config["mapping"]["deduplication"])
 
 
 if config["mapping"]["_generate_qualimap"]:
@@ -30,5 +40,6 @@ rule all:
     input:
         **reads_workflow.get_outputs(),
         **get_outputs(),
+        **get_standalone_outputs(),
     default_target: True
     localrule: True
