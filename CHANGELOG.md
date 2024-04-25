@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.3.0](https://github.com/xsitarcik/mapping/compare/v2.2.0...v2.3.0) (2024-04-25)
+
+
+### Features
+
+* added samtools stats ([5d55bbe](https://github.com/xsitarcik/mapping/commit/5d55bbe05797e289a6f21611db40935595fe26e2))
+* multiqc ([799e3c4](https://github.com/xsitarcik/mapping/commit/799e3c499558f67d4acfd6f15e8b37c50b7c689d))
+
+
+### Bug Fixes
+
+* qualimap produced into bamqc/sample instead of reverse ([f6e39e6](https://github.com/xsitarcik/mapping/commit/f6e39e6ed020195aa7679026816ff14433611114))
+
 ## [2.2.0](https://github.com/xsitarcik/mapping/compare/v2.1.0...v2.2.0) (2024-04-22)
 
 
