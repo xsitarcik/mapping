@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.1](https://github.com/xsitarcik/mapping/compare/v2.3.0...v2.3.1) (2024-04-25)
+
+
+### Bug Fixes
+
+* mapped bam is not temporary if deduplication is not used ([6b4c149](https://github.com/xsitarcik/mapping/commit/6b4c1498f01a727b4707f04c6ffbf6ff0ea2b3f8))
+
 ## [2.3.0](https://github.com/xsitarcik/mapping/compare/v2.2.0...v2.3.0) (2024-04-25)
 
 
