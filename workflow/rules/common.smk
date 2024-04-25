@@ -67,11 +67,11 @@ def get_outputs():
         reference=get_reference_names(),
     )
 
-    if qualiap_steps := config["mapping"]["_generate_qualimap"]:
+    if qualimap_steps := config["mapping"]["_generate_qualimap"]:
         outputs["qualimaps"] = expand(
-            f"results/mapping/{{reference}}/{{step}}/{{sample}}/bamqc",
+            "results/mapping/{reference}/{step}/bamqc/{sample}",
             sample=sample_names,
-            step=config["mapping"]["_generate_qualimap"],
+            step=qualimap_steps,
             reference=get_reference_names(),
         )
 
@@ -132,7 +132,7 @@ def get_multiqc_inputs():
         step = "mapping"
     if step:
         outs["qualimaps"] = expand(
-            f"results/mapping/{{reference}}/{step}/{{sample}}/bamqc",
+            f"results/mapping/{{reference}}/{step}/bamqc/{{sample}}",
             sample=get_sample_names(),
             reference=get_reference_names(),
         )
