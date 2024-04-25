@@ -142,7 +142,7 @@ def get_multiqc_inputs():
         )
 
     outs["samtools_stats"] = expand(
-        "results/mapping/{reference}/{step}/{sample}.stats",
+        "results/mapping/{reference}/{step}/{sample}.samtools_stats",
         step=get_last_step(),
         sample=get_sample_names(),
         reference=get_reference_names(),

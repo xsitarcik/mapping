@@ -57,13 +57,13 @@ rule samtools__stats:
         bam=infer_final_bam,
         ref=infer_reference_fasta,
     output:
-        "results/mapping/{reference}/mapping/{sample}.stats",
+        "results/mapping/{reference}/{step}/{sample}.samtools_stats",
     params:
         extra=lambda wildcards, input: f"--ref-seq {input.ref}",
     threads: min(config["threads"]["mapping__indexing"], config["max_threads"])
     resources:
         mem_mb=get_mem_mb_for_indexing,
     log:
-        "logs/mapping/samtools_stats/{reference}/{sample}.log",
+        "logs/mapping/samtools_stats/{reference}/{sample}_{step}.log",
     wrapper:
         "v3.9.0/bio/samtools/stats"
