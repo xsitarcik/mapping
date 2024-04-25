@@ -5,7 +5,7 @@ rule picard__mark_duplicates:
     output:
         bam="results/mapping/{reference}/deduplication/{sample}.bam",
         idx="results/mapping/{reference}/deduplication/{sample}.bam.bai",
-        metrics=temp("results/mapping/{reference}/deduplication/{sample}.stats"),
+        metrics="results/mapping/{reference}/deduplication/{sample}.stats",
     resources:
         mem_mb=get_mem_mb_for_deduplication,
     log:

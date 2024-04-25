@@ -19,7 +19,7 @@ rule bwa__map_reads:
         index=infer_bwa_index_for_mapping,
         read_group="results/reads/.read_groups/{sample}.txt",
     output:
-        bam=temp("results/mapping/{reference}/mapping/{sample}.bam"),
+        bam=temp_mapping("results/mapping/{reference}/mapping/{sample}.bam"),
     threads: min(config["threads"]["mapping__mapping"], config["max_threads"])
     resources:
         mem_mb=get_mem_mb_for_mapping,

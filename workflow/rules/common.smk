@@ -150,6 +150,12 @@ def get_multiqc_inputs():
     return outs
 
 
+def temp_mapping(output_file):
+    if get_last_step() == "mapping":
+        return output_file
+    return temp(output_file)
+
+
 ### Parameter parsing from config #####################################################################################
 
 
