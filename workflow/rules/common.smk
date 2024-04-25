@@ -104,6 +104,10 @@ def infer_final_bai(wildcards):
     return get_input_bai_for_sample_and_ref(wildcards.sample, wildcards.reference)
 
 
+def infer_reference_fasta(wildcards):
+    return reference_dict[wildcards.reference]
+
+
 ### Contract for other workflows ######################################################################################
 
 
@@ -136,6 +140,13 @@ def get_multiqc_inputs():
             sample=get_sample_names(),
             reference=get_reference_names(),
         )
+
+    outs["samtools_stats"] = expand(
+        "results/mapping/{reference}/{step}/{sample}.stats",
+        step=get_last_step(),
+        sample=get_sample_names(),
+        reference=get_reference_names(),
+    )
     return outs
 
 
