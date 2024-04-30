@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.3.2](https://github.com/xsitarcik/mapping/compare/v2.3.1...v2.3.2) (2024-04-30)
+
+
+### Bug Fixes
+
+* multiqc rule takes config as input ([167a228](https://github.com/xsitarcik/mapping/commit/167a22812043cd8c47afe91b6f0f0b152995bb68))
+* report reorganization ([1bef590](https://github.com/xsitarcik/mapping/commit/1bef590d3d98080c73c3e9b91ef5f87e070562ac))
+* small changes in schema to prevent bad inputs for resources ([824bb55](https://github.com/xsitarcik/mapping/commit/824bb55fa7b46cdd9f8edb1af8a24584f40a8722))
+
+
+### Performance Improvements
+
+* bumped reads module ([2aadfe8](https://github.com/xsitarcik/mapping/commit/2aadfe8b9622ff511504d5904c6bdab6cb0d1ac6))
+* bumped wrappers ([26f2cd0](https://github.com/xsitarcik/mapping/commit/26f2cd0fffc09621e8a1a09a8b19b1cdff222030))
+
 ## [2.3.1](https://github.com/xsitarcik/mapping/compare/v2.3.0...v2.3.1) (2024-04-25)
 
 
