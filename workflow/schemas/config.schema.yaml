@@ -12,11 +12,11 @@ definitions:
         type: integer
         description: "Number of maximum threads to use in jobs."
         default: 8
-        Minimum: 1
+        minimum: 1
       max_mem_mb:
         type: integer
         description: "Maximum memory in megabytes to allocate for any job."
-        Minimum: 2048
+        minimum: 2048
         default: 16384
       resources:
         type: object
@@ -138,10 +138,12 @@ definitions:
       mapping__mapping:
         type: integer
         default: 4
+        minimum: 1
         description: "Number of threads to use for mapping"
       mapping__indexing:
         type: integer
         default: 2
+        minimum: 1
         description: "Number of threads to use for bam_index"
     title: Threads
     required:
@@ -153,7 +155,7 @@ definitions:
     properties:
       reads:
         type: string
-        default: "v3.3.0"
+        default: "v3.4.2"
         pattern: "v[0-9]+.[0-9]+.[0-9]+"
         description: "Version of reads module"
     title: ModuleVersions

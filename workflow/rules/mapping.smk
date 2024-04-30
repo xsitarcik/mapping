@@ -6,7 +6,7 @@ rule samtools__index_reference:
     log:
         "{reference_dir}/logs/samtools__prepare_fai_index/{reference}.log",
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.12.6/wrappers/samtools/faidx"
+        "https://github.com/xsitarcik/wrappers/raw/v1.13.4/wrappers/samtools/faidx"
 
 
 rule custom__infer_read_group:
@@ -20,7 +20,7 @@ rule custom__infer_read_group:
         "logs/custom/infer_and_store_read_group/{sample}.log",
     localrule: True
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.12.6/wrappers/custom/read_group"
+        "https://github.com/xsitarcik/wrappers/raw/v1.13.4/wrappers/custom/read_group"
 
 
 rule picard__prepare_dict_index:
@@ -35,7 +35,7 @@ rule picard__prepare_dict_index:
     resources:
         mem_mb=get_mem_mb_for_deduplication,
     wrapper:
-        "v3.7.0/bio/picard/createsequencedictionary"
+        "v3.9.0/bio/picard/createsequencedictionary"
 
 
 rule samtools__bam_index:
@@ -49,7 +49,7 @@ rule samtools__bam_index:
     log:
         "logs/mapping/indexing/{reference}/mapped/{sample}.log",
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.12.6/wrappers/samtools/index"
+        "https://github.com/xsitarcik/wrappers/raw/v1.13.4/wrappers/samtools/index"
 
 
 rule samtools__stats:
@@ -57,7 +57,14 @@ rule samtools__stats:
         bam=infer_final_bam,
         ref=infer_reference_fasta,
     output:
-        "results/mapping/{reference}/{step}/{sample}.samtools_stats",
+        report(
+            "results/mapping/{reference}/{step}/{sample}.samtools_stats",
+            category="Mapping QC for {reference}",
+            labels={
+                "Sample": "{sample}",
+                "Type": "Samtools stats - {step}",
+            },
+        ),
     params:
         extra=lambda wildcards, input: f"--ref-seq {input.ref}",
     threads: min(config["threads"]["mapping__indexing"], config["max_threads"])
