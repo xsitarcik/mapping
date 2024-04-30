@@ -57,7 +57,14 @@ rule samtools__stats:
         bam=infer_final_bam,
         ref=infer_reference_fasta,
     output:
-        "results/mapping/{reference}/{step}/{sample}.samtools_stats",
+        report(
+            "results/mapping/{reference}/{step}/{sample}.samtools_stats",
+            category="Mapping QC for {reference}",
+            labels={
+                "Sample": "{sample}",
+                "Type": "Samtools stats - {step}",
+            },
+        ),
     params:
         extra=lambda wildcards, input: f"--ref-seq {input.ref}",
     threads: min(config["threads"]["mapping__indexing"], config["max_threads"])

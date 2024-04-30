@@ -6,8 +6,9 @@ rule qualimap__mapping_quality_report:
     output:
         report_dir=report(
             directory("results/mapping/{reference}/{step}/bamqc/{sample}"),
-            category="{sample} - {reference}",
+            category="Mapping QC for {reference}",
             labels={
+                "Sample": "{sample}",
                 "Type": "Qualimap for {step}",
             },
             htmlindex="qualimapReport.html",
