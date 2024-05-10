@@ -82,6 +82,22 @@ extra_fn_clean_exts:
     pattern: "fastqc/"
   - type: regex_keep
     pattern: "(deduplication|original|trimming|subsampling|decontamination)\/([^\/]*)_R[1,2]"
+    module:
+      - fastqc/data
+      - fastqc/zip
+      - fastqc/theoretical_gc
+  - type: regex_keep
+    pattern: "([^\/]*).(deduplication|original)"
+    module:
+      - qualimap
+      - samtools/stats
+      - picard
+  - type: regex
+    pattern: "(.deduplication|.original)"
+    module:
+      - qualimap
+      - samtools/stats
+      - picard
 
 table_columns_visible:
   "FastQC - original":
