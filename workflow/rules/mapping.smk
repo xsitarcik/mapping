@@ -40,9 +40,9 @@ rule picard__prepare_dict_index:
 
 rule samtools__bam_index:
     input:
-        bam="results/mapping/{reference}/mapping/{sample}.bam",
+        bam="results/mapping/{reference}/{sample}.original.bam",
     output:
-        bai="results/mapping/{reference}/mapping/{sample}.bam.bai",
+        bai=temp_mapping("results/mapping/{reference}/{sample}.original.bam.bai"),
     threads: min(config["threads"]["mapping__indexing"], config["max_threads"])
     resources:
         mem_mb=get_mem_mb_for_indexing,
@@ -58,11 +58,11 @@ rule samtools__stats:
         ref=infer_reference_fasta,
     output:
         report(
-            "results/mapping/{reference}/{step}/{sample}.samtools_stats",
+            "results/mapping/{reference}/{sample}.{bam_step}.samtools_stats",
             category="Mapping QC for {reference}",
             labels={
                 "Sample": "{sample}",
-                "Type": "Samtools stats - {step}",
+                "Type": "Samtools stats - {bam_step}",
             },
         ),
     params:
@@ -71,6 +71,6 @@ rule samtools__stats:
     resources:
         mem_mb=get_mem_mb_for_indexing,
     log:
-        "logs/mapping/samtools_stats/{reference}/{sample}_{step}.log",
+        "logs/mapping/samtools_stats/{reference}/{sample}_{bam_step}.log",
     wrapper:
         "v3.9.0/bio/samtools/stats"

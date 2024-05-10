@@ -22,6 +22,10 @@ def get_multiqc_inputs_for_reads():
     return reads_workflow.get_multiqc_inputs()
 
 
+def get_reads_outputs():
+    return reads_workflow.get_outputs()
+
+
 ### Data input handling independent of wildcards ######################################################################
 
 
@@ -53,8 +57,21 @@ def get_reference_names():
 ### Global rule-set stuff #############################################################################################
 
 
-def get_last_step():
-    return "deduplication" if config["mapping"]["deduplication"] else "mapping"
+def get_constraints():
+    return {
+        "reference": "|".join(get_reference_names()),
+        "bam_step": "|".join(["original", "deduplication"]),
+    }
+
+
+def temp_mapping(output_file):
+    if get_last_bam_step() == "original":
+        return output_file
+    return temp(output_file)
+
+
+def get_last_bam_step():
+    return "deduplication" if config["mapping"]["deduplication"] else "original"
 
 
 def get_outputs():
@@ -62,21 +79,21 @@ def get_outputs():
 
     outputs = {}
     outputs["bams"] = expand(
-        f"results/mapping/{{reference}}/{get_last_step()}/{{sample}}.bam",
+        f"results/mapping/{{reference}}/{{sample}}.{get_last_bam_step()}.bam",
         sample=sample_names,
         reference=get_reference_names(),
     )
 
     if qualimap_steps := config["mapping"]["_generate_qualimap"]:
         outputs["qualimaps"] = expand(
-            "results/mapping/{reference}/{step}/bamqc/{sample}",
+            "results/mapping/{reference}/bamqc/{bam_step}/{sample}",
             sample=sample_names,
-            step=qualimap_steps,
+            bam_step=qualimap_steps,
             reference=get_reference_names(),
         )
 
-    outputs = outputs | reads_workflow.get_outputs()
-
+    outputs = outputs | get_reads_outputs()
+    print("getting", outputs)
     return outputs
 
 
@@ -114,11 +131,11 @@ def infer_reference_fasta(wildcards):
 
 
 def get_input_bam_for_sample_and_ref(sample: str, reference: str):
-    return f"results/mapping/{reference}/{get_last_step()}/{sample}.bam"
+    return f"results/mapping/{reference}/{sample}.{get_last_bam_step()}.bam"
 
 
 def get_input_bai_for_sample_and_ref(sample: str, reference: str):
-    return f"results/mapping/{reference}/{get_last_step()}/{sample}.bam.bai"
+    return f"results/mapping/{reference}/{sample}.{get_last_bam_step()}.bam.bai"
 
 
 def get_multiqc_inputs():
@@ -126,36 +143,30 @@ def get_multiqc_inputs():
 
     if config["mapping"]["deduplication"] == "picard":
         outs["picard_dedup"] = expand(
-            "results/mapping/{reference}/deduplication/{sample}.stats",
+            "results/mapping/{reference}/{sample}.deduplication.stats",
             sample=get_sample_names(),
             reference=get_reference_names(),
         )
 
-    step = ""
+    step = ""  # TODO remove this and use only flag for qualimap
     if "deduplication" in config["mapping"]["_generate_qualimap"]:
         step = "deduplication"
     elif "mapping" in config["mapping"]["_generate_qualimap"]:
-        step = "mapping"
+        step = "original"
     if step:
         outs["qualimaps"] = expand(
-            f"results/mapping/{{reference}}/{step}/bamqc/{{sample}}",
+            f"results/mapping/{{reference}}/bamqc/{step}/{{sample}}",
             sample=get_sample_names(),
             reference=get_reference_names(),
         )
 
     outs["samtools_stats"] = expand(
-        "results/mapping/{reference}/{step}/{sample}.samtools_stats",
-        step=get_last_step(),
+        "results/mapping/{reference}/{sample}.{step}.samtools_stats",
+        step=get_last_bam_step(),
         sample=get_sample_names(),
         reference=get_reference_names(),
     )
     return outs
-
-
-def temp_mapping(output_file):
-    if get_last_step() == "mapping":
-        return output_file
-    return temp(output_file)
 
 
 ### Parameter parsing from config #####################################################################################

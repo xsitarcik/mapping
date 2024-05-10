@@ -36,6 +36,10 @@ if config["mapping"]["_generate_qualimap"]:
     include: "rules/qualimap.smk"
 
 
+wildcard_constraints:
+    **get_constraints(),
+
+
 rule all:
     input:
         **get_outputs(),
