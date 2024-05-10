@@ -1,5 +1,30 @@
 # Changelog
 
+## [3.0.0](https://github.com/xsitarcik/mapping/compare/v2.3.2...v3.0.0) (2024-05-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* multiqc is for each reference separately
+
+### Features
+
+* multiqc is for each reference separately ([1993edf](https://github.com/xsitarcik/mapping/commit/1993edfb278b5d626385a42ddd6760244917ee10))
+
+
+### Bug Fixes
+
+* added multiqc into report ([0f0e7b1](https://github.com/xsitarcik/mapping/commit/0f0e7b10365d68f1225207c4d4eb9d5917039da4))
+* multiqc updates ([65f7c7b](https://github.com/xsitarcik/mapping/commit/65f7c7b6a6924ce68cb3e1dabb39bfa29b4109c6))
+* reads module output added into get_outputs ([7f4ddf9](https://github.com/xsitarcik/mapping/commit/7f4ddf96bef8e99136ce204a5024cff61acfefff))
+* restructured outputs from step/sample to sample.step ([0df7f63](https://github.com/xsitarcik/mapping/commit/0df7f6392164e95d4542610ac9ea609526949545))
+* restructured outputs from step/sample to sample.step ([0834f60](https://github.com/xsitarcik/mapping/commit/0834f601e402d0de3a77e4e0cd805f958329a0ea))
+
+
+### Performance Improvements
+
+* bumped wrappers ([682a375](https://github.com/xsitarcik/mapping/commit/682a375bbc5d3998aa209a2508492e5b6adff113))
+
 ## [2.3.2](https://github.com/xsitarcik/mapping/compare/v2.3.1...v2.3.2) (2024-04-30)
 
 
