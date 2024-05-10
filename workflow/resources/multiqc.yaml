@@ -50,18 +50,23 @@ module_order:
   - cutadapt:
       name: "Cutadapt - trimming"
       target: "cutadapt"
+      anchor: "cutadapt"
   - kraken:
       name: "Species Diversity"
       target: "Kraken2"
+      anchor: "kraken"
   - qualimap:
       name: "Qualimap"
       target: "Qualimap"
+      anchor: "qualimap"
   - samtools:
       name: "Samtools (?)"
       target: "Samtools (?)"
+      anchor: "samtools_stats"
   - picard:
       name: "Picard - Bam Duplication"
       target: "Picard"
+      anchor: "picard_deduplication"
 
 fn_clean_exts:
   - ".kreport2"
@@ -80,24 +85,32 @@ extra_fn_clean_exts:
     module: kraken
   - type: remove
     pattern: "fastqc/"
+    module:
+      - "fastqc_decontamination"
+      - "fastqc_deduplication"
+      - "fastqc_original"
+      - "fastqc_subsampling"
+      - "fastqc_trimming"
   - type: regex_keep
     pattern: "(deduplication|original|trimming|subsampling|decontamination)\/([^\/]*)_R[1,2]"
     module:
-      - fastqc/data
-      - fastqc/zip
-      - fastqc/theoretical_gc
+      - "fastqc_decontamination"
+      - "fastqc_deduplication"
+      - "fastqc_original"
+      - "fastqc_subsampling"
+      - "fastqc_trimming"
   - type: regex_keep
     pattern: "([^\/]*).(deduplication|original)"
     module:
       - qualimap
-      - samtools/stats
-      - picard
+      - samtools_stats
+      - picard_deduplication
   - type: regex
     pattern: "(.deduplication|.original)"
     module:
       - qualimap
-      - samtools/stats
-      - picard
+      - samtools_stats
+      - picard_deduplication
 
 table_columns_visible:
   "FastQC - original":
