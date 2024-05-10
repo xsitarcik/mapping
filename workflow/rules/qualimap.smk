@@ -5,7 +5,7 @@ rule qualimap__mapping_quality_report:
         bai="results/mapping/{reference}/{sample}.{bam_step}.bam.bai",
     output:
         report_dir=report(
-            directory("results/mapping/{reference}/bamqc/{bam_step}/{sample}"),
+            directory("results/mapping/{reference}/bamqc/{sample}.{bam_step}"),
             category="Mapping QC for {reference}",
             labels={
                 "Sample": "{sample}",

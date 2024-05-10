@@ -84,16 +84,14 @@ def get_outputs():
         reference=get_reference_names(),
     )
 
-    if qualimap_steps := config["mapping"]["_generate_qualimap"]:
+    if config["mapping"]["_generate_qualimap"]:
         outputs["qualimaps"] = expand(
-            "results/mapping/{reference}/bamqc/{bam_step}/{sample}",
+            f"results/mapping/{{reference}}/bamqc/{{sample}}.{get_last_bam_step()}",
             sample=sample_names,
-            bam_step=qualimap_steps,
             reference=get_reference_names(),
         )
 
     outputs = outputs | get_reads_outputs()
-    print("getting", outputs)
     return outputs
 
 
@@ -148,14 +146,9 @@ def get_multiqc_inputs():
             reference=get_reference_names(),
         )
 
-    step = ""  # TODO remove this and use only flag for qualimap
-    if "deduplication" in config["mapping"]["_generate_qualimap"]:
-        step = "deduplication"
-    elif "mapping" in config["mapping"]["_generate_qualimap"]:
-        step = "original"
-    if step:
+    if config["mapping"]["_generate_qualimap"]:
         outs["qualimaps"] = expand(
-            f"results/mapping/{{reference}}/bamqc/{step}/{{sample}}",
+            f"results/mapping/{{reference}}/bamqc/{{sample}}.{get_last_bam_step()}",
             sample=get_sample_names(),
             reference=get_reference_names(),
         )
