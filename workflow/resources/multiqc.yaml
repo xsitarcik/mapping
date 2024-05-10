@@ -64,7 +64,7 @@ module_order:
       target: "Samtools (?)"
       anchor: "samtools_stats"
   - picard:
-      name: "Picard - Bam Duplication"
+      name: "Picard"
       target: "Picard"
       anchor: "picard_deduplication"
 
@@ -136,7 +136,7 @@ table_columns_visible:
     1_x_pc: False
     5_x_pc: False
     10_x_pc: True
-    30_x_pc: False
+    30_x_pc: True
     50_x_pc: False
     median_coverage: True
     mean_coverage: True

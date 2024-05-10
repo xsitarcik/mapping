@@ -98,7 +98,7 @@ def get_outputs():
 def get_standalone_outputs():
     # outputs that will be produced if the module is run as a standalone workflow, not as a part of a larger workflow
     return {
-        "multiqc_report": "results/_aggregation/multiqc.html",
+        "multiqc_report": expand("results/_aggregation/multiqc_{reference}.html", reference=get_reference_names()),
     }
 
 
@@ -136,30 +136,31 @@ def get_input_bai_for_sample_and_ref(sample: str, reference: str):
     return f"results/mapping/{reference}/{sample}.{get_last_bam_step()}.bam.bai"
 
 
-def get_multiqc_inputs():
+def get_multiqc_inputs(reference: str):
     outs = get_multiqc_inputs_for_reads()
 
     if config["mapping"]["deduplication"] == "picard":
         outs["picard_dedup"] = expand(
-            "results/mapping/{reference}/{sample}.deduplication.stats",
+            f"results/mapping/{reference}/{{sample}}.deduplication.stats",
             sample=get_sample_names(),
-            reference=get_reference_names(),
         )
 
     if config["mapping"]["_generate_qualimap"]:
         outs["qualimaps"] = expand(
-            f"results/mapping/{{reference}}/bamqc/{{sample}}.{get_last_bam_step()}",
+            f"results/mapping/{reference}/bamqc/{{sample}}.{get_last_bam_step()}",
             sample=get_sample_names(),
-            reference=get_reference_names(),
         )
 
     outs["samtools_stats"] = expand(
-        "results/mapping/{reference}/{sample}.{step}.samtools_stats",
+        f"results/mapping/{reference}/{{sample}}.{{step}}.samtools_stats",
         step=get_last_bam_step(),
         sample=get_sample_names(),
-        reference=get_reference_names(),
     )
     return outs
+
+
+def infer_multiqc_inputs_for_reference(wildcards):
+    return get_multiqc_inputs(wildcards.reference)
 
 
 ### Parameter parsing from config #####################################################################################
