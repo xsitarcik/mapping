@@ -75,6 +75,8 @@ def get_outputs():
             reference=get_reference_names(),
         )
 
+    outputs = outputs | reads_workflow.get_outputs()
+
     return outputs
 
 
