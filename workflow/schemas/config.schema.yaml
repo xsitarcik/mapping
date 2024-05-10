@@ -52,7 +52,7 @@ definitions:
             mapping:
               properties:
                 _generate_qualimap:
-                  minItems: 1
+                  const: True
         then:
           properties:
             resources:
@@ -85,30 +85,14 @@ definitions:
         examples:
           - "picard"
       _generate_qualimap:
-        type: array
-        description: "Steps to generate qualimap for."
-        items:
-          type: string
-          enum:
-            - "mapping"
-            - "deduplication"
-        examples: [["deduplication"]]
+        type: boolean
+        description: "If true, qualimap is generated for the last bam step (deduplication or original)."
+        examples: [true]
     required:
       - mapping
       - reference_fasta_paths
       - deduplication
       - _generate_qualimap
-    allOf:
-      - if:
-          properties:
-            _generate_fastqc_for:
-              contains:
-                const: "deduplication"
-        then:
-          properties:
-            deduplication:
-              type: string
-              description: "Mapping->Deduplication is required if qualimap is requested for deduplication"
   Resources:
     additionalProperties: true
     properties:
@@ -155,7 +139,7 @@ definitions:
     properties:
       reads:
         type: string
-        default: "v3.4.2"
+        default: "v3.4.4"
         pattern: "v[0-9]+.[0-9]+.[0-9]+"
         description: "Version of reads module"
     title: ModuleVersions

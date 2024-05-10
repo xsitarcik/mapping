@@ -1,15 +1,15 @@
 
 rule qualimap__mapping_quality_report:
     input:
-        bam="results/mapping/{reference}/{step}/{sample}.bam",
-        bai="results/mapping/{reference}/{step}/{sample}.bam.bai",
+        bam="results/mapping/{reference}/{sample}.{bam_step}.bam",
+        bai="results/mapping/{reference}/{sample}.{bam_step}.bam.bai",
     output:
         report_dir=report(
-            directory("results/mapping/{reference}/{step}/bamqc/{sample}"),
+            directory("results/mapping/{reference}/bamqc/{sample}.{bam_step}"),
             category="Mapping QC for {reference}",
             labels={
                 "Sample": "{sample}",
-                "Type": "Qualimap for {step}",
+                "Type": "Qualimap for {bam_step}",
             },
             htmlindex="qualimapReport.html",
         ),
@@ -21,6 +21,6 @@ rule qualimap__mapping_quality_report:
     resources:
         mem_mb=get_mem_mb_for_qualimap,
     log:
-        "logs/qualimap/{reference}/{step}/{sample}.log",
+        "logs/qualimap/{reference}/{bam_step}/{sample}.log",
     wrapper:
         "https://github.com/xsitarcik/wrappers/raw/v1.13.4/wrappers/qualimap/bamqc"

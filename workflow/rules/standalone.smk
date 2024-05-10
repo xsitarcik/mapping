@@ -1,12 +1,20 @@
 rule multiqc__report:
     input:
-        **get_multiqc_inputs(),
+        unpack(infer_multiqc_inputs_for_reference),
         config=f"{workflow.basedir}/resources/multiqc.yaml",
     output:
-        "results/_aggregation/multiqc.html",
+        report(
+            "results/_aggregation/multiqc_{reference}.html",
+            category="Summary",
+            labels={
+                "Reference": "{reference}",
+                "Type": "MultiQC",
+            },
+        ),
     params:
         use_input_files_only=True,
+        extra=lambda wildcards: f"--title 'Reference: {wildcards.reference}'",
     log:
-        "logs/multiqc/all.log",
+        "logs/multiqc/{reference}.log",
     wrapper:
-        "v3.9.0/bio/multiqc"
+        "v3.10.2/bio/multiqc"
